@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>007 Flip</title>
+  <style>
+    body {
+      background-color: black;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      perspective: 1000px;
+      width: 90vw;
+      max-width: 676px;
+      margin: 50px auto;
+    }
+
+    .flip-box {
+      width: 100%;
+      aspect-ratio: 676 / 1000;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .flipped {
+      transform: rotateY(180deg);
+    }
+
+    .face {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+    }
+
+    .back {
+      transform: rotateY(180deg);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="flip-box" id="flipBox">
+      <div class="face front">
+        <img src="007.jpg" alt="Image avant">
+      </div>
+      <div class="face back">
+        <img src="008.png" alt="Image arrière">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const box = document.getElementById('flipBox');
+      let count = 0;
+      let lastTap = 0;
+
+      box.addEventListener('click', function(e) {
+        const now = Date.now();
+        if (now - lastTap < 200) return; // Ignore les taps très rapprochés
+        lastTap = now;
+
+        count++;
+        if (count === 7) {
+          box.classList.toggle('flipped');
+          count = 0;
+        }
+      });
+    })();
+
+    let t = 0;
+    document.addEventListener('touchend', function(e) {
+      const n = Date.now();
+      if (n - t <= 300) e.preventDefault();
+      t = n;
+    }, false);
+  </script>
+</body>
+</html>
