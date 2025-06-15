@@ -101,7 +101,7 @@
     let t = 0;
     document.addEventListener('touchend', function(e) {
       const n = Date.now();
-      if (n - t <= 300) e.preventDefault();
+      //if (n - t <= 300) e.preventDefault();
       t = n;
     }, false);
   </script>
