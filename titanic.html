@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bateau vs Icebergs</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #001f3f; font-family: sans-serif; }
+    #gameArea { position: relative; width: 100vw; height: 100vh; }
+    #boat {
+      position: absolute;
+      bottom: 10px; left: 50%;
+      transform: translateX(-50%);
+      width: 60px; height: 60px;
+      background: url('boat.png') no-repeat center / contain;
+    }
+    .iceberg {
+      position: absolute; width: 40px; height: 40px;
+      background: white; border-radius: 50%;
+      top: -40px;
+    }
+    #scoreboard {
+      position: absolute; top: 10px; left: 10px;
+      color: white; font-size: 20px;
+    }
+    #message {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: yellow; font-size: 30px; display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameArea">
+    <div id="boat"></div>
+    <div id="scoreboard">Score : 0</div>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    const gameArea = document.getElementById("gameArea");
+    const boat = document.getElementById("boat");
+    const scoreboard = document.getElementById("scoreboard");
+    const message = document.getElementById("message");
+    let score = 0, gameOver = false;
+
+    function createIceberg() {
+      const iceberg = document.createElement("div");
+      iceberg.classList.add("iceberg");
+      iceberg.style.left = Math.random() * (window.innerWidth - 40) + "px";
+      gameArea.appendChild(iceberg);
+
+      let topPos = -40;
+      const fall = setInterval(() => {
+        if (gameOver) return clearInterval(fall);
+        topPos += 5;
+        iceberg.style.top = topPos + "px";
+
+        if (topPos > window.innerHeight) {
+          iceberg.remove();
+          score += 10;
+          scoreboard.textContent = "Score : " + score;
+          if (score >= 100) {
+            gameOver = true;
+            message.textContent = "Bravo 🎉";
+            message.style.display = "block";
+          }
+          clearInterval(fall);
+        }
+
+        const boatRect = boat.getBoundingClientRect();
+        const iceRect = iceberg.getBoundingClientRect();
+        if (
+          iceRect.bottom > boatRect.top &&
+          iceRect.top < boatRect.bottom &&
+          iceRect.left < boatRect.right &&
+          iceRect.right > boatRect.left
+        ) {
+          gameOver = true;
+          message.textContent = "Perdu 💥";
+          message.style.display = "block";
+          clearInterval(fall);
+        }
+      }, 30);
+    }
+
+    setInterval(() => {
+      if (!gameOver) createIceberg();
+    }, 800);
+
+    let startX;
+    gameArea.addEventListener("touchstart", e => {
+      startX = e.touches[0].clientX;
+    });
+
+    gameArea.addEventListener("touchmove", e => {
+      if (gameOver) return;
+      const diff = e.touches[0].clientX - startX;
+      const left = Math.min(window.innerWidth - 60, Math.max(0, boat.offsetLeft + diff));
+      boat.style.left = left + "px";
+      startX = e.touches[0].clientX;
+    });
+  </script>
+</body>
+</html>
