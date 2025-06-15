@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>007 Flip</title>
   <style>
     body {
@@ -60,21 +61,30 @@
       <div class="face front">
         <img src="007.jpg" alt="Image avant">
       </div>
-      <div class="face back">
-        <img src="008.png" alt="Image arrière">
-      </div>
+      <div class="face back" id="backFace"></div>
     </div>
   </div>
 
   <script>
     (function(){
       const box = document.getElementById('flipBox');
-      let count = 0;
-      let lastTap = 0;
+      const back = document.getElementById('backFace');
+      let count = 0, lastTap = 0;
 
-      box.addEventListener('click', function(e) {
+      // Création dynamique de l’image arrière
+      const img = document.createElement('img');
+      img.src = '008.png';
+      img.alt = 'Image arrière';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'contain';
+      img.style.display = 'block';
+      back.appendChild(img);
+
+      // Gestion du clic sécurisé (évite les tap multiples rapides)
+      box.addEventListener('click', function() {
         const now = Date.now();
-        if (now - lastTap < 200) return; // Ignore les taps très rapprochés
+        //if (now - lastTap < 300) return;
         lastTap = now;
 
         count++;
@@ -84,7 +94,10 @@
         }
       });
     })();
+  </script>
 
+  <script>
+    // Bloque le double tap zoom sur certains navigateurs mobiles
     let t = 0;
     document.addEventListener('touchend', function(e) {
       const n = Date.now();
