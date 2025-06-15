@@ -9,9 +9,10 @@
     #gameArea { position: relative; width: 100vw; height: 100vh; }
     #boat {
       position: absolute;
-      bottom: 10px; left: 50%;
-      transform: translateX(-50%);
-      width: 60px; height: 60px;
+      bottom: 10px;
+      left: 50vw;
+      width: 60px;
+      height: 60px;
       background: url('boat.png') no-repeat center / contain;
     }
     .iceberg {
@@ -96,8 +97,9 @@
     gameArea.addEventListener("touchmove", e => {
       if (gameOver) return;
       const diff = e.touches[0].clientX - startX;
-      const left = Math.min(window.innerWidth - 60, Math.max(0, boat.offsetLeft + diff));
-      boat.style.left = left + "px";
+      let newLeft = boat.offsetLeft + diff;
+      newLeft = Math.min(window.innerWidth - 60, Math.max(0, newLeft));
+      boat.style.left = newLeft + "px";
       startX = e.touches[0].clientX;
     });
   </script>
